@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/app/app.dart';
+import 'package:mobile/core/utils/supabase_client.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Supabase 초기화
+  await SupabaseService.initialize();
+
   runApp(const ProviderScope(child: SnapDramaApp()));
 }
 
