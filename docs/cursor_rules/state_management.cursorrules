@@ -1,0 +1,115 @@
+# SnapDrama 상태 관리 패턴 규칙 (Riverpod)
+
+# 프로바이더 정의 규칙
+rules:
+  - description: "Provider 네이밍 패턴"
+    pattern: "final ([a-z][a-zA-Z0-9]*Provider) = (Provider|StateProvider|FutureProvider|StreamProvider|StateNotifierProvider|ChangeNotifierProvider)"
+    message: "프로바이더 변수는 camelCase에 Provider 접미사를 사용해야 합니다 (예: userProvider, authStateProvider)."
+
+  - description: "StateNotifierProvider 네이밍 패턴"
+    pattern: "final ([a-z][a-zA-Z0-9]*Provider) = StateNotifierProvider<([A-Z][a-zA-Z0-9]*)Notifier, ([A-Z][a-zA-Z0-9]*)State>"
+    message: "StateNotifierProvider는 *Provider 변수명, *Notifier 클래스, *State 상태 클래스 패턴을 따라야 합니다."
+
+  - description: "프로바이더 패밀리 네이밍 패턴"
+    pattern: "final ([a-z][a-zA-Z0-9]*Provider) = (Provider|StateProvider|FutureProvider|StreamProvider|StateNotifierProvider)\\.family"
+    message: "프로바이더 패밀리도 일반 프로바이더와 동일한 네이밍 패턴을 따라야 합니다."
+
+  - description: "비동기 데이터 로딩을 위한 FutureProvider 사용"
+    pattern: "final ([a-z][a-zA-Z0-9]*Provider) = FutureProvider<([A-Za-z0-9<>\\[\\]]+)>"
+    message: "비동기 데이터 로딩은 FutureProvider를 사용해야 합니다."
+
+  - description: "스트림 데이터를 위한 StreamProvider 사용"
+    pattern: "final ([a-z][a-zA-Z0-9]*Provider) = StreamProvider<([A-Za-z0-9<>\\[\\]]+)>"
+    message: "스트림 데이터는 StreamProvider를 사용해야 합니다."
+
+# StateNotifier 클래스 규칙
+rules:
+  - description: "StateNotifier 클래스 정의 패턴"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)Notifier extends StateNotifier<([A-Z][a-zA-Z0-9]*)State>"
+    message: "StateNotifier 클래스는 *Notifier 이름과 *State 타입을 사용해야 합니다."
+
+  - description: "StateNotifier 초기 상태 설정"
+    pattern: "class [A-Z][a-zA-Z0-9]*Notifier extends StateNotifier<[A-Z][a-zA-Z0-9]*State> \\{([\\s\\S]*?)super\\(([A-Z][a-zA-Z0-9]*State\\.(initial|empty)\\(\\)|[A-Z][a-zA-Z0-9]*State\\(.*\\))\\)"
+    message: "StateNotifier는 생성자에서 super()를 통해 초기 상태를 설정해야 합니다."
+
+  - description: "StateNotifier 상태 변경 방식"
+    pattern: "state = (state\\.copyWith|[A-Z][a-zA-Z0-9]*State)"
+    message: "상태 변경은 state = state.copyWith(...) 또는 state = NewState(...) 패턴을 따라야 합니다."
+
+  - description: "StateNotifier에서 비동기 메서드 정의"
+    pattern: "async ([a-z][a-zA-Z0-9]*)\\([\\s\\S]*?\\) \\{([\\s\\S]*?)state = state\\.copyWith\\(isLoading: true\\)"
+    message: "비동기 상태 변경 메서드는 시작 시 로딩 상태를 설정해야 합니다."
+
+  - description: "StateNotifier에서 예외 처리"
+    pattern: "try \\{([\\s\\S]*?)\\} catch \\(e\\) \\{([\\s\\S]*?)state = state\\.copyWith\\(error: e\\.toString\\(\\), isLoading: false\\)"
+    message: "비동기 작업은 적절한 예외 처리와 함께 오류 상태를 설정해야 합니다."
+
+# 상태 클래스 규칙
+rules:
+  - description: "상태 클래스 정의 패턴"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)State \\{"
+    message: "상태 클래스는 *State 네이밍 패턴을 사용해야 합니다."
+
+  - description: "불변성을 위한 freezed 사용"
+    pattern: "@freezed\\s+class ([A-Z][a-zA-Z0-9]*)State with _\\$([A-Z][a-zA-Z0-9]*)State"
+    message: "상태 클래스는 불변성을 위해 freezed 패키지를 사용해야 합니다."
+
+  - description: "초기 상태 팩토리 메서드"
+    pattern: "factory ([A-Z][a-zA-Z0-9]*)State\\.initial\\(\\) => ([A-Z][a-zA-Z0-9]*)State\\("
+    message: "상태 클래스는 initial() 팩토리 메서드를 제공해야 합니다."
+
+  - description: "빈 상태 팩토리 메서드"
+    pattern: "factory ([A-Z][a-zA-Z0-9]*)State\\.empty\\(\\) => ([A-Z][a-zA-Z0-9]*)State\\("
+    message: "필요한 경우 상태 클래스는 empty() 팩토리 메서드를 제공해야 합니다."
+
+  - description: "상태 클래스에 isLoading 필드"
+    pattern: "(final bool isLoading|bool\\? isLoading|required bool isLoading)"
+    message: "비동기 작업 처리를 위해 상태 클래스는 isLoading 필드를 포함해야 합니다."
+
+  - description: "상태 클래스에 error 필드"
+    pattern: "(final String\\? error|String\\? error|required String\\? error)"
+    message: "오류 처리를 위해 상태 클래스는 error 필드를 포함해야 합니다."
+
+# 상태 사용 규칙
+rules:
+  - description: "ref.watch 사용 패턴"
+    pattern: "ref\\.watch\\(([a-z][a-zA-Z0-9]*Provider)(\\(.*\\))?\\)"
+    message: "위젯에서 상태를 읽을 때는 ref.watch를 사용합니다."
+
+  - description: "ref.read 사용 패턴"
+    pattern: "ref\\.read\\(([a-z][a-zA-Z0-9]*Provider)(\\(.*\\))?\\)"
+    message: "상태를 변경하는 이벤트 핸들러에서는 ref.read를 사용합니다."
+
+  - description: "ref.listen 사용 패턴"
+    pattern: "ref\\.listen\\(([a-z][a-zA-Z0-9]*Provider)(\\(.*\\))?, \\(previous, next\\) =>"
+    message: "상태 변경을 감지하고 사이드 이펙트를 처리할 때는 ref.listen을 사용합니다."
+
+  - description: "select 메서드를 사용한 세밀한 재빌드 제어"
+    pattern: "ref\\.watch\\(([a-z][a-zA-Z0-9]*Provider)(\\(.*\\))?\\.select\\(\\(value\\) =>"
+    message: "필요한 부분만 재빌드하려면 select 메서드를 사용합니다."
+
+  - description: "ConsumerWidget 사용"
+    pattern: "class ([A-Z][a-zA-Z0-9]*) extends ConsumerWidget"
+    message: "Riverpod 상태를 사용하는 위젯은 ConsumerWidget을 상속해야 합니다."
+
+  - description: "ConsumerStatefulWidget 사용"
+    pattern: "class ([A-Z][a-zA-Z0-9]*) extends ConsumerStatefulWidget"
+    message: "상태가 있는 위젯에서 Riverpod 상태를 사용할 때는 ConsumerStatefulWidget을 상속해야 합니다."
+
+# 상태 테스트 규칙
+rules:
+  - description: "ProviderContainer를 사용한 테스트"
+    pattern: "final container = ProviderContainer\\(\\)"
+    message: "프로바이더 테스트에는 ProviderContainer를 사용해야 합니다."
+
+  - description: "프로바이더 오버라이드"
+    pattern: "ProviderContainer\\(overrides: \\["
+    message: "테스트에서는 프로바이더 오버라이드를 사용하여 의존성을 모킹해야 합니다."
+
+  - description: "프로바이더 상태 검증"
+    pattern: "expect\\(container\\.read\\(([a-z][a-zA-Z0-9]*Provider)(\\(.*\\))?\\), "
+    message: "테스트에서는 container.read를 사용하여 프로바이더 상태를 검증해야 합니다."
+
+  - description: "프로바이더 변경 리스너"
+    pattern: "container\\.listen\\(([a-z][a-zA-Z0-9]*Provider)(\\(.*\\))?, \\(previous, next\\) =>"
+    message: "프로바이더의 상태 변경을 테스트할 때는 listen을 사용합니다."

@@ -1,0 +1,157 @@
+# SnapDrama API 설계 규칙
+
+# API 라우터 구성 규칙
+rules:
+  - description: "API 라우터 정의 패턴"
+    pattern: "router = APIRouter\\(\\s*prefix=\"(/api/v[0-9]+/[a-z\\-]+)\""
+    message: "API 라우터는 /api/v1/resource 형식의 접두사를 사용해야 합니다."
+
+  - description: "라우터 태그 사용"
+    pattern: "router = APIRouter\\([\\s\\S]*?tags=\\[\"([a-zA-Z\\-]+)\"\\]"
+    message: "API 라우터에는 OpenAPI 문서화를 위한 태그를 지정해야 합니다."
+
+  - description: "라우터 응답 모델 사용"
+    pattern: "@router\\.(get|post|put|patch|delete)\\([\\s\\S]*?response_model=([A-Za-z0-9\\[\\]]+)"
+    message: "API 엔드포인트에는 응답 모델을 명시적으로 지정해야 합니다."
+
+  - description: "인증 의존성 사용"
+    pattern: "@router\\.(post|put|patch|delete)\\([\\s\\S]*?dependencies=\\[Depends\\(([a-z_]+)\\)\\]"
+    message: "상태를 변경하는 API 엔드포인트에는 인증 의존성을 적용해야 합니다."
+
+  - description: "경로 파라미터 유효성 검사"
+    pattern: "([a-z_]+_id): str = Path\\(\\.\\.\\.,"
+    message: "경로 파라미터에는 Path 유효성 검사를 적용해야 합니다."
+
+# API 엔드포인트 설계 규칙
+rules:
+  - description: "GET 엔드포인트 네이밍 패턴"
+    pattern: "@router\\.get\\(\"/([a-z\\-{}]+)\"[\\s\\S]*?def (get|list)_([a-z_]+)\\("
+    message: "GET 엔드포인트는 get_ 또는 list_ 접두사를 사용해야 합니다."
+
+  - description: "POST 엔드포인트 네이밍 패턴"
+    pattern: "@router\\.post\\(\"/([a-z\\-{}]+)\"[\\s\\S]*?def (create|add)_([a-z_]+)\\("
+    message: "POST 엔드포인트는 create_ 또는 add_ 접두사를 사용해야 합니다."
+
+  - description: "PUT 엔드포인트 네이밍 패턴"
+    pattern: "@router\\.put\\(\"/([a-z\\-{}]+)\"[\\s\\S]*?def update_([a-z_]+)\\("
+    message: "PUT 엔드포인트는 update_ 접두사를 사용해야 합니다."
+
+  - description: "DELETE 엔드포인트 네이밍 패턴"
+    pattern: "@router\\.delete\\(\"/([a-z\\-{}]+)\"[\\s\\S]*?def (delete|remove)_([a-z_]+)\\("
+    message: "DELETE 엔드포인트는 delete_ 또는 remove_ 접두사를 사용해야 합니다."
+
+  - description: "PATCH 엔드포인트 네이밍 패턴"
+    pattern: "@router\\.patch\\(\"/([a-z\\-{}]+)\"[\\s\\S]*?def (update|patch)_([a-z_]+)\\("
+    message: "PATCH 엔드포인트는 update_ 또는 patch_ 접두사를 사용해야 합니다."
+
+# API 문서화 규칙
+rules:
+  - description: "API 엔드포인트 문서화"
+    pattern: "@router\\.(get|post|put|patch|delete)\\([\\s\\S]*?def [a-z_]+\\([\\s\\S]*?\\):[\\s\\S]*?\"\"\"([\\s\\S]*?)\"\"\""
+    message: "모든 API 엔드포인트는 문서화 문자열을 포함해야 합니다."
+
+  - description: "API 응답 상태 코드 문서화"
+    pattern: "@router\\.(get|post|put|patch|delete)\\([\\s\\S]*?status_code=status\\.([A-Z_]+)"
+    message: "API 엔드포인트에는 명시적인 상태 코드를 지정해야 합니다."
+
+  - description: "API 매개변수 문서화"
+    pattern: "([a-z_]+): ([A-Za-z0-9\\[\\]]+) = (Query|Path|Body|Form|Depends)\\([\\s\\S]*?description=\"([^\"]*)\"[\\s\\S]*?\\)"
+    message: "API 매개변수에는 설명을 포함해야 합니다."
+
+  - description: "API 응답 예제 포함"
+    pattern: "@router\\.(get|post|put|patch|delete)\\([\\s\\S]*?responses=\\{[\\s\\S]*?\"examples\": \\{"
+    message: "가능한 경우 API 응답에 예제를 포함하는 것이 좋습니다."
+
+# 스키마 설계 규칙
+rules:
+  - description: "기본 스키마 클래스 패턴"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)Base\\(BaseModel\\):"
+    message: "기본 스키마 클래스는 *Base 접미사를 사용해야 합니다."
+
+  - description: "생성 스키마 클래스 패턴"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)Create\\(([A-Z][a-zA-Z0-9]*)Base\\):"
+    message: "생성 작업을 위한 스키마 클래스는 *Create 접미사를 사용해야 합니다."
+
+  - description: "업데이트 스키마 클래스 패턴"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)Update\\(BaseModel\\):"
+    message: "업데이트 작업을 위한 스키마 클래스는 *Update 접미사를 사용해야 합니다."
+
+  - description: "응답 스키마 클래스 패턴"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)\\(([A-Z][a-zA-Z0-9]*)Base\\):"
+    message: "응답 스키마 클래스는 기본 스키마를 상속하고 접미사 없이 사용해야 합니다."
+
+  - description: "필드 유효성 검사 사용"
+    pattern: "([a-z_]+): ([A-Za-z0-9\\[\\]]+) = Field\\([\\s\\S]*?(ge|gt|le|lt|regex|max_length|min_length)="
+    message: "스키마 필드에는 적절한 유효성 검사를 적용해야 합니다."
+
+  - description: "선택적 필드 패턴 (업데이트 스키마)"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)Update\\(BaseModel\\):[\\s\\S]*?([a-z_]+): Optional\\[([A-Za-z0-9\\[\\]]+)\\] = None"
+    message: "업데이트 스키마에서는 선택적 필드(Optional)를 사용해야 합니다."
+
+# API 서비스 레이어 규칙
+rules:
+  - description: "서비스 클래스 네이밍 패턴"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)Service:"
+    message: "서비스 클래스는 *Service 접미사를 사용해야 합니다."
+
+  - description: "서비스 메서드의 데이터베이스 세션 주입"
+    pattern: "def __init__\\(self, db: Session\\):"
+    message: "서비스 클래스 생성자는 데이터베이스 세션을 주입받아야 합니다."
+
+  - description: "서비스 메서드의 명명 규칙"
+    pattern: "def (get|create|update|delete|list)_([a-z_]+)\\(self,"
+    message: "서비스 메서드는 get_, create_, update_, delete_, list_ 접두사를 사용해야 합니다."
+
+  - description: "서비스 메서드의 오류 처리"
+    pattern: "(if not|if.*is None)[\\s\\S]*?raise ([A-Z][a-zA-Z0-9]*)Exception\\("
+    message: "서비스 메서드는 적절한 오류 처리를 포함해야 합니다."
+
+# API 응답 형식 규칙
+rules:
+  - description: "GET 컬렉션 응답 포맷"
+    pattern: "@router\\.get\\([\\s\\S]*?response_model=List\\[([A-Za-z0-9]+)\\]"
+    message: "컬렉션 조회 엔드포인트는 List[Resource] 형식의 응답 모델을 사용해야 합니다."
+
+  - description: "GET 단일 리소스 응답 포맷"
+    pattern: "@router\\.get\\(\"[^{}]*/{[a-z_]+_id}[^{}]*\"[\\s\\S]*?response_model=([A-Za-z0-9]+)"
+    message: "단일 리소스 조회 엔드포인트는 Resource 형식의 응답 모델을 사용해야 합니다."
+
+  - description: "POST 생성 응답 포맷"
+    pattern: "@router\\.post\\([\\s\\S]*?status_code=status\\.HTTP_201_CREATED[\\s\\S]*?response_model=([A-Za-z0-9]+)"
+    message: "리소스 생성 엔드포인트는 201 Created 상태 코드와 생성된 리소스를 반환해야 합니다."
+
+  - description: "DELETE 응답 포맷"
+    pattern: "@router\\.delete\\([\\s\\S]*?status_code=status\\.HTTP_204_NO_CONTENT"
+    message: "리소스 삭제 엔드포인트는 204 No Content 상태 코드를 반환해야 합니다."
+
+# 인증 및 권한 규칙
+rules:
+  - description: "관리자 권한 검사"
+    pattern: "current_user: User = Depends\\(get_current_admin_user\\)"
+    message: "관리자 전용 엔드포인트는 get_current_admin_user 의존성을 사용해야 합니다."
+
+  - description: "인증된 사용자 검사"
+    pattern: "current_user: User = Depends\\(get_current_user\\)"
+    message: "인증이 필요한 엔드포인트는 get_current_user 의존성을 사용해야 합니다."
+
+  - description: "선택적 인증 검사"
+    pattern: "current_user: Optional\\[User\\] = Depends\\(get_optional_current_user\\)"
+    message: "선택적 인증이 필요한 엔드포인트는 get_optional_current_user 의존성을 사용해야 합니다."
+
+  - description: "권한 검사 로직"
+    pattern: "if (not current_user\\.is_admin|current_user\\.id != [a-z_]+\\.user_id):"
+    message: "엔드포인트는 적절한 권한 검사 로직을 포함해야 합니다."
+
+# 페이지네이션 및 필터링 규칙
+rules:
+  - description: "페이지네이션 매개변수"
+    pattern: "(skip|offset): int = Query\\(0, ge=0[\\s\\S]*?limit: int = Query\\([0-9]+, (ge=1|le=[0-9]+)"
+    message: "컬렉션 조회 엔드포인트는 표준 페이지네이션 매개변수를 제공해야 합니다."
+
+  - description: "정렬 매개변수"
+    pattern: "(sort_by|order_by): Optional\\[str\\] = Query\\(None[\\s\\S]*?(sort_order|order_direction): Optional\\[str\\] = Query\\(\"asc\""
+    message: "컬렉션 조회 엔드포인트는 표준 정렬 매개변수를 제공하는 것이 좋습니다."
+
+  - description: "필터링 매개변수"
+    pattern: "([a-z_]+): Optional\\[([A-Za-z0-9\\[\\]]+)\\] = Query\\(None, description=\"([^\"]*)\"\\)"
+    message: "필터링 매개변수는 선택적이며 설명을 포함해야 합니다."

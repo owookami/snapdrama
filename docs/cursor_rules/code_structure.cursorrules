@@ -1,0 +1,79 @@
+# SnapDrama 코드 구조 규칙
+
+# Flutter 앱 구조 규칙
+rules:
+  - description: "앱 초기화 코드는 app 디렉토리에 위치"
+    pattern: "apps/mobile/lib/app/(app|app_startup|providers)\\.dart"
+    message: "앱 초기화 관련 코드는 app 디렉토리 내에 위치해야 합니다."
+
+  - description: "공통 유틸리티는 core 디렉토리에 위치"
+    pattern: "apps/mobile/lib/core/(constants|exceptions|extensions|utils|logging)/"
+    message: "공통 유틸리티 코드는 core 디렉토리 내의 적절한 하위 디렉토리에 위치해야 합니다."
+
+  - description: "기능별 코드 구조화"
+    pattern: "apps/mobile/lib/features/[a-z_]+/(domain|data|presentation)/"
+    message: "기능별 코드는 domain(모델, 인터페이스), data(구현, 레포지토리), presentation(UI) 레이어로 구분해야 합니다."
+
+  - description: "라우팅 관련 코드는 router 디렉토리에 위치"
+    pattern: "apps/mobile/lib/router/(router|routes)\\.dart"
+    message: "라우팅 관련 코드는 router 디렉토리에 위치해야 합니다."
+
+  - description: "공유 위젯은 shared/widgets 디렉토리에 위치"
+    pattern: "apps/mobile/lib/shared/widgets/[a-z_]+\\.dart"
+    message: "재사용 가능한 위젯은 shared/widgets 디렉토리에 위치해야 합니다."
+
+# FastAPI 백엔드 구조 규칙
+rules:
+  - description: "API 라우터는 api/routes 디렉토리에 위치"
+    pattern: "apps/api/app/api/routes/[a-z_]+\\.py"
+    message: "API 라우터는 api/routes 디렉토리에 위치해야 합니다."
+
+  - description: "데이터베이스 모델은 db/models 디렉토리에 위치"
+    pattern: "apps/api/app/db/models/[a-z_]+\\.py"
+    message: "데이터베이스 모델은 db/models 디렉토리에 위치해야 합니다."
+
+  - description: "스키마 정의는 schemas 디렉토리에 위치"
+    pattern: "apps/api/app/schemas/[a-z_]+\\.py"
+    message: "Pydantic 스키마는 schemas 디렉토리에 위치해야 합니다."
+
+  - description: "비즈니스 로직은 services 디렉토리에 위치"
+    pattern: "apps/api/app/services/[a-z_]+_service\\.py"
+    message: "비즈니스 로직은 services 디렉토리에 위치하고 *_service.py 형식으로 명명해야 합니다."
+
+  - description: "비동기 작업은 workers 디렉토리에 위치"
+    pattern: "apps/api/app/workers/(tasks|celery_app|media_processor)\\.py"
+    message: "비동기 작업 관련 코드는 workers 디렉토리에 위치해야 합니다."
+
+# 공유 패키지 구조 규칙
+rules:
+  - description: "공유 모델은 packages/shared/lib/src/models 디렉토리에 위치"
+    pattern: "packages/shared/lib/src/models/[a-z_]+\\.dart"
+    message: "공유 모델은 packages/shared/lib/src/models 디렉토리에 위치해야 합니다."
+
+  - description: "공유 유틸리티는 packages/shared/lib/src/utils 디렉토리에 위치"
+    pattern: "packages/shared/lib/src/utils/[a-z_]+\\.dart"
+    message: "공유 유틸리티는 packages/shared/lib/src/utils 디렉토리에 위치해야 합니다."
+
+  - description: "공유 상수는 packages/shared/lib/src/constants 디렉토리에 위치"
+    pattern: "packages/shared/lib/src/constants/[a-z_]+\\.dart"
+    message: "공유 상수는 packages/shared/lib/src/constants 디렉토리에 위치해야 합니다."
+
+# 테스트 코드 구조 규칙
+rules:
+  - description: "Flutter 테스트 구조"
+    pattern: "apps/mobile/test/(unit|widget|integration)/.*_test\\.dart"
+    message: "Flutter 테스트는 unit, widget, integration 디렉토리로 구분해야 합니다."
+
+  - description: "Python 테스트 구조"
+    pattern: "apps/api/tests/(test_api|test_services|test_models|test_workers)/test_[a-z_]+\\.py"
+    message: "Python 테스트는 test_api, test_services, test_models, test_workers 디렉토리로 구분해야 합니다."
+
+# 리소스 파일 구조 규칙
+rules:
+  - description: "Flutter 리소스 파일 구조"
+    pattern: "apps/mobile/assets/(images|fonts|animations|i18n)/.*"
+    message: "Flutter 리소스 파일은 assets 디렉토리 내 적절한 하위 디렉토리에 위치해야 합니다."
+
+  - description: "다국어 리소스 파일 구조"
+    pattern: "apps/mobile/assets/i18n/app_(ko|en|ja)\\.arb"
+    message: "다국어 리소스 파일은 assets/i18n 디렉토리에 app_*.arb 형식으로 위치해야 합니다."

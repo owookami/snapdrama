@@ -1,0 +1,7 @@
+.DS_Store
+node_modules/
+.env
+.dart_tool/
+build/
+*.lock
+

@@ -1,0 +1,106 @@
+# SnapDrama 네이밍 컨벤션 규칙
+
+# Dart/Flutter 네이밍 규칙
+rules:
+  - description: "파일명은 소문자와 언더스코어 사용 (snake_case)"
+    pattern: ".*\\.dart$"
+    filePattern: "^[a-z][a-z0-9_]*\\.dart$"
+    message: "Dart 파일명은 snake_case를 사용해야 합니다."
+
+  - description: "클래스명은 PascalCase 사용"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)( extends| implements| with| {)"
+    message: "클래스명은 PascalCase를 사용해야 합니다 (예: HomeScreen, UserRepository)."
+
+  - description: "변수명과 함수명은 camelCase 사용"
+    pattern: "(var|final|const|late) ([a-z][a-zA-Z0-9]*)"
+    message: "변수명은 camelCase를 사용해야 합니다 (예: userName, emailAddress)."
+    
+  - description: "함수명은 camelCase 사용"
+    pattern: "([A-Za-z<>\\[\\]]+) ([a-z][a-zA-Z0-9]*)\\("
+    message: "함수명은 camelCase를 사용해야 합니다 (예: getUserData, fetchEpisodeList)."
+
+  - description: "상수명은 소문자 camelCase 사용"
+    pattern: "const ([a-z][a-zA-Z0-9]*)"
+    message: "상수명은 일반 변수와 동일하게 camelCase를 사용합니다."
+
+  - description: "열거형(enum)은 PascalCase 사용"
+    pattern: "enum ([A-Z][a-zA-Z0-9]*)"
+    message: "열거형 이름은 PascalCase를 사용해야 합니다 (예: ConnectionState)."
+
+  - description: "열거형 값은 camelCase 사용"
+    pattern: "enum [A-Z][a-zA-Z0-9]* \\{([\\s\\S]*?)\\}"
+    negativePattern: "\\s[A-Z][A-Z0-9_]*[,;]"
+    message: "Flutter/Dart에서 열거형 값은 camelCase를 사용합니다 (SCREAMING_CAPS가 아님)."
+
+# Python 네이밍 규칙
+rules:
+  - description: "Python 파일명은 소문자와 언더스코어 사용 (snake_case)"
+    pattern: ".*\\.py$"
+    filePattern: "^[a-z][a-z0-9_]*\\.py$"
+    message: "Python 파일명은 snake_case를 사용해야 합니다."
+
+  - description: "Python 함수명과 변수명은 snake_case 사용"
+    pattern: "(def|async def) ([a-z][a-z0-9_]*)\\("
+    message: "Python 함수명은 snake_case를 사용해야 합니다 (예: get_user_data, fetch_episode_list)."
+
+  - description: "Python 변수명은 snake_case 사용"
+    pattern: "([a-z][a-z0-9_]*) ="
+    message: "변수명은 snake_case를 사용해야 합니다 (예: user_name, email_address)."
+
+  - description: "Python 클래스명은 PascalCase 사용"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)\\(?"
+    message: "클래스명은 PascalCase를 사용해야 합니다 (예: UserService, EpisodeModel)."
+
+  - description: "Python 상수명은 대문자와 언더스코어 사용 (SCREAMING_SNAKE_CASE)"
+    pattern: "([A-Z][A-Z0-9_]*) ="
+    message: "상수명은 대문자 SCREAMING_SNAKE_CASE를 사용해야 합니다 (예: MAX_RETRY_COUNT, API_BASE_URL)."
+
+  - description: "Python 모듈 수준 변수명은 snake_case 사용"
+    pattern: "^([a-z][a-z0-9_]*) ="
+    message: "모듈 수준 변수명은 snake_case를 사용해야 합니다."
+
+# 공통 네이밍 규칙
+rules:
+  - description: "약어는 전체 대문자로 표기하지 않음"
+    pattern: "([A-Z]{2,})([A-Z][a-z])"
+    message: "약어는 일반 단어처럼 처리해야 합니다. 예: HttpClient (HTTP가 아님), JsonParser (JSON이 아님)."
+
+  - description: "불리언 변수/함수는 is_, has_, should_ 등의 접두사 사용"
+    pattern: "(var|final|let|const|boolean|bool) (is|has|should|can|will|was)[A-Z]"
+    positiveExample: "final isLoading = true; final hasError = false;"
+    negativeExample: "final loading = true; final error = false;"
+    message: "불리언 변수는 is_, has_, should_ 등의 접두사를 사용해야 합니다."
+    
+  - description: "불리언 함수도 is_, has_, should_ 등의 접두사 사용"
+    pattern: "(bool|boolean) (is|has|should|can|will|was)[A-Z]"
+    positiveExample: "bool isValidEmail(String email) {...}"
+    negativeExample: "bool validateEmail(String email) {...}"
+    message: "불리언 반환 함수는 is_, has_, should_ 등의 접두사를 사용해야 합니다."
+
+# 특수 네이밍 규칙
+rules:
+  - description: "Riverpod 프로바이더 네이밍"
+    pattern: "(final|var) ([a-z][a-zA-Z0-9]*Provider) ="
+    message: "Riverpod 프로바이더 이름은 *Provider 형식을 사용해야 합니다 (예: userProvider, authStateProvider)."
+
+  - description: "Flutter 위젯 클래스 네이밍"
+    pattern: "class ([A-Z][a-zA-Z0-9]*)(Widget|Screen|Page|View)( extends| implements| with| {)"
+    message: "위젯 클래스 이름은 의미와 용도를 명확히 표현해야 합니다 (예: HomeScreen, UserProfileWidget)."
+
+  - description: "FastAPI 라우터 변수명"
+    pattern: "([a-z][a-z0-9_]*)_router ="
+    message: "FastAPI 라우터 변수명은 *_router 형식을 사용해야 합니다 (예: user_router, auth_router)."
+
+  - description: "API 엔드포인트 함수 네이밍"
+    pattern: "def (get|create|update|delete|list)_[a-z0-9_]+\\("
+    message: "API 엔드포인트 함수는 HTTP 메서드를 접두사로 사용해야 합니다 (예: get_user, create_episode)."
+
+# 국제화(i18n) 관련 네이밍 규칙
+rules:
+  - description: "다국어 키 네이밍"
+    pattern: "['\"](app|common|error|auth|home|player|settings)\\.[a-z0-9_\\.]+['\"]"
+    message: "다국어 키는 '섹션.기능.항목' 형식을 사용해야 합니다 (예: 'auth.login.title', 'player.controls.play')."
+
+  - description: "번역 파일 네이밍"
+    pattern: "app_(ko|en|ja)\\.arb"
+    message: "번역 파일은 app_언어코드.arb 형식을 사용해야 합니다 (예: app_ko.arb, app_en.arb)."
